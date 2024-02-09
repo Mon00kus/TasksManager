@@ -1,0 +1,115 @@
+﻿@page "/add-new"
+@inject ITasksManagementRepository Repository
+@inject NavigationManager Navigation
+
+<PageTitle>
+    Agregar nueva tarea
+</PageTitle>
+
+@if (authMessage == "NO autenticado.")
+{
+    <div class="list-item" style="font-size:20px">
+        Debe estar autenticado para ver las tareas.
+    </div>
+}
+else
+{
+    <div class="container-fluid m-lg-4">
+        <div class="col-6">
+            <EditForm Enhance=true
+                      method="post"
+                      FormName="AddTaskMangementForm"
+                      Model="taskManagement"
+                      autocomplete="off"
+                      OnValidSubmit="AddTaskManagement">
+                <h3>Agregar nueva tarea</h3>
+                <div class="mb-3">
+                    <label for="title" class="form-label">
+                        Titulo
+                    </label>
+                    <InputText id="title"
+                               @bind-Value="taskManagement.Title"
+                               class="form-control"
+                               shadow-none />
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">
+                        Descripción
+                    </label>
+                    <InputText id="description"
+                               @bind-Value="taskManagement.Description"
+                               class="form-control"
+                               shadow-none />
+                </div>
+                <div class="mb-3">
+                    <label for="createdAt" class="form-label">
+                        Fecha de creación
+                    </label>
+                    <InputDate id="createdAt"
+                               @bind-Value="taskManagement.CreatedAt"
+                               class="form-control"
+                               shadow-none />
+                </div>
+                <div class="mb-3">
+                    <label for="state" class="form-label">
+                        Estado de la tarea
+                    </label>
+                    <InputSelect id="state" @bind-Value="taskManagement.State" class="form-control">
+                        <option value="0">
+                            Seleccione opción
+                        </option>
+                        @foreach (var state in Enum.GetValues(typeof(State)))
+                        {
+                            <option value="@state">
+                                @state.ToString()
+                            </option>
+                        }
+                    </InputSelect>
+                </div>
+                <div class="mb-3">
+                    <button class="btn btn-primary shadow-none">
+                        Enviar
+                    </button>
+                    <a href="/Listar"
+                       class="btn btn-secondary shadow-none ms-3">
+                        Volver a Lista
+                    </a>
+                </div>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+            </EditForm>
+        </div>
+    </div>
+}
+
+
+@code {
+
+    private string authMessage = "NO autenticado.";
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
+    [SupplyParameterFromForm]
+    public TaskManagement taskManagement { get; set; } = new();
+
+    private async Task AddTaskManagement()
+    {
+        await Repository.AddAsync(taskManagement);
+        Navigation.NavigateTo("/");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (authenticationState is not null)
+        {
+            var authState = await authenticationState;
+            var user = authState?.User;
+
+            if (user?.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                authMessage = $"{user.Identity.Name} esta autenticado.";
+            }
+        }
+    }
+}

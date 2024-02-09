@@ -1,0 +1,31 @@
+﻿@if (Show)
+{
+    <div class="confirm-dialog-container">
+        <div class="confirm-dialog">
+            <h3>
+                Seguro de borrar la tarea ?
+            </h3>
+            <div class="d-flex flex-row justify-content-end mt-3">
+                <button @onclick="OnCancel" class="btn btn-secondary shadow-none mt-3">
+                    Cancelar
+                </button>
+                <button @onclick="OnOk" class="btn btn-danger shadow-none ms-lg-3 mt-3">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public bool Show { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    [Parameter]
+    public EventCallback OnOk { get; set; }
+
+}

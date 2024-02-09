@@ -1,0 +1,60 @@
+﻿.listItem-header h1, .listItem-footer h3 {
+    margin: 0;
+    padding: 0.5rem;
+    width: 100%;
+}
+
+.listItem-header h1 {
+    background-color: #333333;
+    color: white;
+    border-radius: 0.5rem 0.5rem 0 0;
+    font-size: 1rem;
+}
+
+.listItem-body {
+    padding: 0.5rem;
+}
+
+.listItem-footer h3 {
+    background-color: #003366;
+    color: white;
+    border-radius: 0 0 0.5rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.list-card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.5rem 0;
+}
+
+.list-card {
+    position: relative;
+}
+
+    .list-card::before, .list-card::after {
+        content: "";
+        position: absolute;
+        /*left: 0;*/
+        top: 50%;
+        transform: translateY(-50%);
+        height: 50%;
+        width: 1px;
+        /*border-left: 2px dotted #000;*/
+    }
+
+    .list-card::before {
+        left: 0;
+        border-left: 2px dotted #000;
+    }
+
+    .list-card::after {
+        right: 0;
+        /*border-left: none; */
+        border-right: 2px dotted #000;
+    }

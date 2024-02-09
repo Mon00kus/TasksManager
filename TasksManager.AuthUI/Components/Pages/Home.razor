@@ -1,0 +1,12 @@
+﻿@page "/"
+
+<PageTitle>Inicio de la aplicación</PageTitle>
+
+<AuthorizeView>
+    <Authorized>
+        <Listar />
+    </Authorized>
+    <NotAuthorized>
+        Debe estar autenticado para ver las tareas.
+    </NotAuthorized>
+</AuthorizeView>

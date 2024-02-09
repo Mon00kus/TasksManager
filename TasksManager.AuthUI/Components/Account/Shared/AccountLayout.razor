@@ -1,0 +1,28 @@
+﻿@inherits LayoutComponentBase
+@layout TasksManager.AuthUI.Components.Layout.MainLayout
+@inject NavigationManager NavigationManager
+
+@if (HttpContext is null)
+{
+    <p>Llamando...</p>
+}
+else
+{
+    @Body
+}
+
+@code {
+    [CascadingParameter]
+    private HttpContext? HttpContext { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (HttpContext is null)
+        {
+            // Si este código se ejecuta, actualmente estamos renderizando en modo interactivo, por lo que no hay HttpContext.
+            // Las páginas de identidad necesitan configurar cookies, por lo que requieren un HttpContext. Para lograr esto nosotros
+            // debe volver del modo interactivo a una página renderizada por el servidor.
+            NavigationManager.Refresh(forceReload: true);
+        }
+    }
+}

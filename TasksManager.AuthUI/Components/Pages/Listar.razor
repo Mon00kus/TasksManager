@@ -1,0 +1,95 @@
+﻿@page "/Listar"
+@inject ITasksManagementRepository Repository
+@* @attribute [StreamRendering] AAA*@
+@* @rendermode InteractiveServer Makes all the page interative, All the components in the module including 
+the List-item component becomes interative, alternative it can be defined just in the list item*@
+
+<PageTitle>
+    Listado de Tareas
+</PageTitle>
+
+@if (authMessage == "NO autenticado.")
+{
+    <div class="list-item" style="font-size:20px">
+        Debe estar autenticado para ver las tareas.
+    </div>    
+}
+else
+{
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <a href="add-new"
+               class="btn btn-primary shadow mb-3">
+                Agregar tarea
+            </a>
+            <div class="mb-3">
+                <label for="state" class="form-label">
+                    Filtrar por estado de la tarea
+                </label>
+                <InputSelect id="state" @bind-Value="taskManagement.State" class="form-control">
+                    <option value="0">
+                        Seleccione opción
+                    </option>
+                    @foreach (var state in Enum.GetValues(typeof(State)))
+                    {
+                        <option value="@state">
+                            @state.ToString()
+                        </option>
+                    }
+                </InputSelect>
+            </div>
+            @if (taskList is null)
+            {
+                <div class="book-item">
+                    Llamando listado...
+                </div>
+            }
+            else if (taskList.Any())
+            {
+                @foreach (var taskItem in taskList)
+                {
+                    <div class="list-item">
+                        <List_item @rendermode="InteractiveServer" taskItem="taskItem" />
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="list-item">
+                    No se encontraron Tareas.
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+
+    private string authMessage = "NO autenticado.";
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
+    [SupplyParameterFromForm]
+    public TaskManagement taskManagement { get; set; } = new();
+
+    private List<TaskManagement>? taskList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        /* await Task.Delay(3000);AAA *//* Se usa para dar el efecto de que se estan cargando los elementos */
+
+        taskList = await Repository.GetAllAsync();
+
+        if (authenticationState is not null)
+        {
+            var authState = await authenticationState;
+            var user = authState?.User;
+
+            if (user?.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                authMessage = $"{user.Identity.Name} esta autenticado.";
+            }
+        }        
+    }
+}

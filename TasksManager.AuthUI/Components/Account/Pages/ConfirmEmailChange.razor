@@ -1,0 +1,68 @@
+﻿@page "/Account/ConfirmEmailChange"
+
+@using System.Text
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.WebUtilities
+@using TasksManager.AuthUI.Data
+
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IdentityRedirectManager RedirectManager
+
+<PageTitle>Confirmar el cambio de correo</PageTitle>
+
+<h1>Confirmar el cambio de correo</h1>
+
+<StatusMessage Message="@message" />
+
+@code {
+    private string? message;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromQuery]
+    private string? UserId { get; set; }
+
+    [SupplyParameterFromQuery]
+    private string? Email { get; set; }
+
+    [SupplyParameterFromQuery]
+    private string? Code { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (UserId is null || Email is null || Code is null)
+        {
+            RedirectManager.RedirectToWithStatus(
+                "Account/Login", "Error: Invalid email change confirmation link.", HttpContext);
+        }
+
+        var user = await UserManager.FindByIdAsync(UserId);
+        if (user is null)
+        {
+            message = "Unable to find user with Id '{userId}'";
+            return;
+        }
+
+        var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code));
+        var result = await UserManager.ChangeEmailAsync(user, Email, code);
+        if (!result.Succeeded)
+        {
+            message = "Error cambiando el correo.";
+            return;
+        }
+
+        // En nuestra interfaz de usuario, el correo electrónico y el nombre de usuario son lo mismo, por lo que cuando actualizamos el correo electrónico
+        // Necesitamos actualizar el nombre de usuario.
+        var setUserNameResult = await UserManager.SetUserNameAsync(user, Email);
+        if (!setUserNameResult.Succeeded)
+        {
+            message = "Error cambiando el nombre de usuario.";
+            return;
+        }
+
+        await SignInManager.RefreshSignInAsync(user);
+        message = "Gracias por confirmar su cambio de email.";
+    }
+}

@@ -1,0 +1,126 @@
+﻿@page "/edit/{id:int}"
+@inject ITasksManagementRepository Repository
+@inject NavigationManager Navigation
+
+<PageTitle>
+    Editar tarea
+</PageTitle>
+
+@if (authMessage == "NO autenticado.")
+{
+    <div class="list-item" style="font-size:20px">
+        Debe estar autenticado para ver las tareas.
+    </div>
+
+}else if (taskManagement is not null)
+{
+    <div class="container-fluid m-lg-4">
+        <div class="col-6">
+            <EditForm 
+                Enhance=true
+                method="Post"
+                FormName="EditTaskManagementForm"
+                Model="taskManagement"
+                autocomplete="off"
+                OnValidSubmit="EditTaskManagement"
+            >
+                <h3>Editando tarea - @Id</h3>
+                <input type="hidden" name="taskManagement.Id" value="@taskManagement.Id" />
+                <div class="mb-3">
+                    <label for="title" class="form-label">
+                        Titulo
+                    </label>
+                    <InputText id="title"
+                               @bind-Value="taskManagement.Title"
+                               class="form-control"
+                               shadow-none />
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">
+                        Descripción
+                    </label>
+                    <InputText id="description"
+                               @bind-Value="taskManagement.Description"
+                               class="form-control"
+                               shadow-none />
+                </div>
+                <div class="mb-3">
+                    <label for="createdAt" class="form-label">
+                        Fecha de creación
+                    </label>
+                    <InputDate id="createdAt"
+                               @bind-Value="taskManagement.CreatedAt"
+                               class="form-control"
+                               shadow-none />
+                </div>
+                <div class="mb-3">
+                    <label for="state" class="form-label">
+                        Estado de la tarea
+                    </label>
+                    <InputSelect id="state" @bind-Value="taskManagement.State" class="form-control">
+                        <option value="0">
+                            Seleccione opción
+                        </option>
+                        @foreach (var state in Enum.GetValues(typeof(State)))
+                        {
+                            <option value="@state">
+                                @state.ToString()
+                            </option>
+                        }
+                    </InputSelect>
+                </div>
+                <div class="mb-3">
+                    <button class="btn btn-primary shadow-none">
+                        Enviar
+                    </button>
+                    <a href="/"
+                       class="btn btn-secondary shadow-none ms-3">
+                        Volver a tareas
+                    </a>
+                </div>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+
+    private string authMessage = "NO autenticado.";
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    public TaskManagement? taskManagement { get; set; }    
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        taskManagement ??= await Repository.GetByIdAsync(Id);
+
+        if (authenticationState is not null)
+        {
+            var authState = await authenticationState;
+            var user = authState?.User;
+
+            if (user?.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                authMessage = $"{user.Identity.Name} esta autenticado.";
+            }
+        }
+    }
+
+    private async Task EditTaskManagement()
+    {
+        if (taskManagement is not null)
+        {
+            await Repository.UpdateAsync(taskManagement);
+            Navigation.NavigateTo("/Listar");
+        }
+    }
+}

@@ -1,0 +1,57 @@
+﻿@inject ITasksManagementRepository Repository
+@inject NavigationManager Navigation
+
+<div class="list-card">
+    <div class="list-card-body">
+        <div class="listItem-header">
+            <h1>@taskItem.Title</h1>
+        </div>
+        <div class="listItem-body">
+            <h5>@taskItem.Description</h5>
+        </div>
+        <div class="listItem-footer">
+            <h3>
+                Tarea creada el:
+                @taskItem.CreatedAt?.ToString("ddd, dd MMM yyy HH':'mm':'ss 'GMT'") | 
+                Estado: @taskItem.State
+            </h3>
+        </div>        
+    </div>    
+</div>
+<div class="actions">
+    <a href="@($"/edit/{taskItem.Id}")"
+       class="btn btn-warning shadow-none">
+        Editar
+    </a>
+    <button @onclick="OpenConfirmDialog" class="btn btn-danger shadow-none ms-3">
+        Borrar tarea
+    </button>
+</div>
+
+<DelConfirmDialog Show="showConfirmDialog"
+    OnCancel="CancelDelete"
+    OnOk="DeleteTask"/>
+
+@code {
+    private bool showConfirmDialog;
+
+    [Parameter]
+    public required TaskManagement taskItem { get; set; }
+
+    private void OpenConfirmDialog()
+    {
+        showConfirmDialog = true;
+    }
+
+    private void CancelDelete()
+    {
+        showConfirmDialog = false;
+    }
+
+    private async Task DeleteTask()
+    {
+        await Repository.DeleteAsync(taskItem.Id);
+        showConfirmDialog = false;
+        Navigation.NavigateTo("/Listar");
+    }
+}
