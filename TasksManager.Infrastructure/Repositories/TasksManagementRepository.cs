@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TasksManager.Application.Interfaces;
 using TasksManager.Domain.Entities;
+using TasksManager.Domain.Enums;
 using TasksManager.Infrastructure.Context;
 
 namespace TasksManager.Infrastructure.Repositories
@@ -38,6 +39,14 @@ namespace TasksManager.Infrastructure.Repositories
         {
             var listItem = await Context.TaskManagements.FirstOrDefaultAsync(e => e.Id == id);
             return listItem;
+        }
+
+        public async Task<List<TaskManagement>> GetTasksByStateAsync(State state)
+        {
+            var tasksByState = await Context.TaskManagements
+                                    .Where(task => task.State == state)
+                                    .ToListAsync();
+            return tasksByState;
         }
 
         public async Task UpdateAsync(TaskManagement taskManagement)

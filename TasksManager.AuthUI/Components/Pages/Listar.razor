@@ -1,8 +1,5 @@
 ﻿@page "/Listar"
 @inject ITasksManagementRepository Repository
-@* @attribute [StreamRendering] AAA*@
-@* @rendermode InteractiveServer Makes all the page interative, All the components in the module including 
-the List-item component becomes interative, alternative it can be defined just in the list item*@
 
 <PageTitle>
     Listado de Tareas
@@ -24,17 +21,23 @@ else
             </a>
             <div class="mb-3">
                 <label for="state" class="form-label">
-                    Filtrar por estado de la tarea
+                    Filtrar tarea
                 </label>
-                <InputSelect id="state" @bind-Value="taskManagement.State" class="form-control">
+                <InputSelect 
+                    id="state"                    
+                    @bind-Value="taskManagement.State"          
+                    @onchange="EventCallback.Factory.Create<ChangeEventArgs>(this, FilterTasks)"
+                    class="form-control"
+                >
                     <option value="0">
                         Seleccione opción
                     </option>
                     @foreach (var state in Enum.GetValues(typeof(State)))
                     {
-                        <option value="@state">
+                        @* <option value="@state">
                             @state.ToString()
-                        </option>
+                        </option> *@
+                        <option value="@((int)state)">@state.ToString()</option>
                     }
                 </InputSelect>
             </div>
@@ -76,8 +79,7 @@ else
     private List<TaskManagement>? taskList;
 
     protected override async Task OnInitializedAsync()
-    {
-        /* await Task.Delay(3000);AAA *//* Se usa para dar el efecto de que se estan cargando los elementos */
+    {       
 
         taskList = await Repository.GetAllAsync();
 
@@ -91,5 +93,14 @@ else
                 authMessage = $"{user.Identity.Name} esta autenticado.";
             }
         }        
+    }
+        
+    private async Task FilterTasks(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var stateValue) && Enum.IsDefined(typeof(State), stateValue))
+        {
+            taskList = await Repository.GetTasksByStateAsync((State)stateValue);
+            StateHasChanged();
+        }
     }
 }

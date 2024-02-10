@@ -1,4 +1,5 @@
 ﻿using TasksManager.Domain.Entities;
+using TasksManager.Domain.Enums;
 
 namespace TasksManager.Application.Interfaces
 {
@@ -9,5 +10,6 @@ namespace TasksManager.Application.Interfaces
         Task<TaskManagement?> GetByIdAsync(int id);
         Task UpdateAsync(TaskManagement taskManagement);
         Task DeleteAsync(int id);
+        Task<List<TaskManagement>> GetTasksByStateAsync(State state);
     }
 }
