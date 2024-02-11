@@ -33,7 +33,8 @@
                     <InputText id="title"
                                @bind-Value="taskManagement.Title"
                                class="form-control"
-                               shadow-none />
+                               shadow-none/>
+                    <ValidationMessage For="(()=>taskManagement.Title)" />
                 </div>
                 <div class="mb-3">
                     <label for="description" class="form-label">
@@ -43,6 +44,7 @@
                                @bind-Value="taskManagement.Description"
                                class="form-control"
                                shadow-none />
+                    <ValidationMessage For="(()=>taskManagement.Description)" />
                 </div>
                 <div class="mb-3">
                     <label for="createdAt" class="form-label">
@@ -52,6 +54,7 @@
                                @bind-Value="taskManagement.CreatedAt"
                                class="form-control"
                                shadow-none />
+                    <ValidationMessage For="(()=>taskManagement.CreatedAt)" />
                 </div>
                 <div class="mb-3">
                     <label for="state" class="form-label">
@@ -68,6 +71,7 @@
                             </option>
                         }
                     </InputSelect>
+                    <ValidationMessage For="(()=>taskManagement.State)" />
                 </div>
                 <div class="mb-3">
                     @* <button class="btn btn-primary shadow-none">
