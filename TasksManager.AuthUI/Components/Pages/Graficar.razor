@@ -1,4 +1,5 @@
 ﻿@page "/graff"
+@inject ITasksManagementRepository Repository
 
 <PageTitle>
     Gráfica de las tareas
@@ -11,7 +12,11 @@
     </div>
 }
 else
-{    
+{   
+  <div>
+        <MudText Typo="Typo.h6">Gráfico de barras en base a tareas</MudText>
+  </div>  
+
   <div>
       <MudChart 
           ChartType="ChartType.Bar" 
@@ -19,11 +24,24 @@ else
           @bind-SelectedIndex="index" 
           XAxisLabels="@XAxisLabels"
           Width="100%"
-          Height="350px"></MudChart>
+          Height="350px">
+            <CustomGraphics>
+                <style>
+                    .f1 {
+                        font: bold 20px Helvetica;
+                    }
+
+                    .f2 {
+                        font: italic 20px Helvetica;
+                        fill: rgb(62,44,221);
+                    }
+                </style>
+                <text x="80" y="35" class="f1">Gráfica de barras</text>
+                <text x="105" y="70" class="f2">Tareas de un tipo por mes/ano</text>
+            </CustomGraphics>
+      </MudChart>
   </div>
-
-    <MudText Typo="Typo.h6">Gráfico de barras en base a tareas</MudText>
-
+   
     <MudButton Variant="Variant.Filled" 
         Color="Color.Primary"
         Class="shadow me-3">
@@ -44,8 +62,11 @@ else
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationState { get; set; }
 
+    private List<TaskManagement>? taskList;
+
     protected override async Task OnInitializedAsync()
-    {
+    {        
+        await InitializeChartData();
 
         if (authenticationState is not null)
         {
@@ -58,13 +79,82 @@ else
             }
         }
     }
-
+    
+    
     private int index = -1;
+
     public List<ChartSeries> Series = new List<ChartSeries>()
-    {
-        new ChartSeries() { Name="United states", Data = new double[] { 40,20,25,27,46, 60,48,80,15} },
-        new ChartSeries() { Name="Germany", Data = new double[] { 19,24,35,13,28, 15,13,16,31} },
-        new ChartSeries() { Name="United states", Data = new double[] { 8,6,11,13,4,16,10,16,18} }
+    {        
+        // new ChartSeries { Name = "Pendiente", Data = new double[] { 5, 3 }}, // 5 tareas en Enero, 3 en Febrero
+        // new ChartSeries { Name = "Completada", Data = new double[] { 2, 4 } } // 2 tareas en Enero, 4 en Febrero
+        // new ChartSeries() { Name="United states", Data = new double[] { 40,20,25,27,46, 60,48,80,15} },
+        // new ChartSeries() { Name="Germany", Data = new double[] { 19,24,35,13,28, 15,13,16,31} },
+        // new ChartSeries() { Name="United states", Data = new double[] { 8,6,11,13,4,16,10,16,18} }
     };
-    public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
+
+    //    public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
+    public string[] XAxisLabels = { }; /*= { "Pendiente", "EnProgreso", "Completada", "Olvidalo" }; */
+    //public string[] XAxisLabels = new string[] { "Enero", "Febrero" };
+
+    private async Task InitializeChartData()
+    {
+        taskList = await Repository.GetAllAsync();
+
+        if (taskList != null)
+        {
+            // Agrupar por Estado y por Mes/Año
+            var groupedByStateAndMonth = taskList
+                .GroupBy(t => new { t.State, MonthYear = $"{t.CreatedAt?.Month}/{t.CreatedAt?.Year}" })
+                .Select(group => new { group.Key.State, group.Key.MonthYear, Count = group.Count() })
+                .ToList();
+
+            // Obtener todos los meses/años únicos para usar como etiquetas del eje X
+            XAxisLabels = groupedByStateAndMonth
+                .Select(g => g.MonthYear)
+                .Distinct()
+                .OrderBy(x => x) // Asegúrarse de que estén en orden cronológico
+                .ToArray();
+
+            // Preparar las series por Estado
+            Series.Clear();
+            foreach (var state in Enum.GetValues(typeof(State)))
+            {
+                var stateName = EtoS((State)state);
+                var data = new List<double>();
+
+                foreach (var label in XAxisLabels)
+                {
+                    var count = groupedByStateAndMonth
+                        .Where(g => EtoS(g.State) == stateName && g.MonthYear == label)
+                        .Select(g => (double)g.Count)
+                        .FirstOrDefault(); // Usar 0 si no hay tareas para ese mes/año
+
+                    data.Add(count);
+                }
+
+                Series.Add(new ChartSeries { Name = stateName, Data = data.ToArray() });
+            }
+        }
+    }
+
+    private string EtoS(State state)
+    {
+        string res="";
+        switch ((int)state)
+        {
+            case 1 : 
+                res = "Pendiente";
+                break;
+            case 2:
+                res = "EnProgreso";
+                break;
+            case 3:
+                res = "Completada";
+                break;
+            case 4:
+                res = "Olvidalo";
+                break;
+        }
+        return res;
+    }
 }

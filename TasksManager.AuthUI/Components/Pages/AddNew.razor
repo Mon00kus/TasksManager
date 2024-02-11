@@ -70,9 +70,9 @@ else
                     </InputSelect>
                     <ValidationMessage For="(()=>taskManagement.State)" />
                 </div>
-              @*   <div class="mb-3">
+                @* <div class="mb-3">
                     <button class="btn btn-primary shadow-none">
-                        Enviar
+                        Agregar tarea
                     </button>
                     <a href="/Listar"
                        class="btn btn-secondary shadow-none ms-3">
@@ -80,9 +80,9 @@ else
                     </a>
                 </div>   *@
                 <MudButton 
+                    ButtonType="ButtonType.Submit"
                     Variant="Variant.Filled"
-                    Color="Color.Primary"
-                    Href="add-new"
+                    Color="Color.Primary"                    
                     Class="shadow me-3">
                     Agregar
                 </MudButton>
@@ -114,7 +114,7 @@ else
     private async Task AddTaskManagement()
     {
         await Repository.AddAsync(taskManagement);
-        Navigation.NavigateTo("/");
+        Navigation.NavigateTo("/Listar");
     }
 
     protected override async Task OnInitializedAsync()
