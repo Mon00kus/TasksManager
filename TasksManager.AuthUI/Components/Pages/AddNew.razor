@@ -2,6 +2,7 @@
 @inject ITasksManagementRepository Repository
 @inject NavigationManager Navigation
 
+
 <PageTitle>
     Agregar nueva tarea
 </PageTitle>
@@ -30,7 +31,8 @@ else
                     <InputText id="title"
                                @bind-Value="taskManagement.Title"
                                class="form-control"
-                               shadow-none />
+                               shadow-none></InputText>
+                    <ValidationMessage For="(()=>taskManagement.Title)" />
                 </div>
                 <div class="mb-3">
                     <label for="description" class="form-label">
@@ -39,7 +41,8 @@ else
                     <InputText id="description"
                                @bind-Value="taskManagement.Description"
                                class="form-control"
-                               shadow-none />
+                               shadow-none></InputText>
+                    <ValidationMessage For="(()=>taskManagement.Description)" />
                 </div>
                 <div class="mb-3">
                     <label for="createdAt" class="form-label">
@@ -48,7 +51,8 @@ else
                     <InputDate id="createdAt"
                                @bind-Value="taskManagement.CreatedAt"
                                class="form-control"
-                               shadow-none />
+                               shadow-none></InputDate>
+                    <ValidationMessage For="(()=>taskManagement.CreatedAt)" />
                 </div>
                 <div class="mb-3">
                     <label for="state" class="form-label">
@@ -65,6 +69,7 @@ else
                             </option>
                         }
                     </InputSelect>
+                    <ValidationMessage For="(()=>taskManagement.State)" />
                 </div>
                 <div class="mb-3">
                     <button class="btn btn-primary shadow-none">
@@ -75,7 +80,8 @@ else
                         Volver a Lista
                     </a>
                 </div>
-                <DataAnnotationsValidator />
+                @* <DataAnnotationsValidator /> *@
+                <FluentValidationValidator />
                 <ValidationSummary />
             </EditForm>
         </div>
