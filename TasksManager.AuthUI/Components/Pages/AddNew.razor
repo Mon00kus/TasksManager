@@ -2,7 +2,6 @@
 @inject ITasksManagementRepository Repository
 @inject NavigationManager Navigation
 
-
 <PageTitle>
     Agregar nueva tarea
 </PageTitle>
@@ -71,7 +70,7 @@ else
                     </InputSelect>
                     <ValidationMessage For="(()=>taskManagement.State)" />
                 </div>
-                <div class="mb-3">
+              @*   <div class="mb-3">
                     <button class="btn btn-primary shadow-none">
                         Enviar
                     </button>
@@ -79,8 +78,21 @@ else
                        class="btn btn-secondary shadow-none ms-3">
                         Volver a Lista
                     </a>
-                </div>
-                @* <DataAnnotationsValidator /> *@
+                </div>   *@
+                <MudButton 
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    Href="add-new"
+                    Class="shadow me-3">
+                    Agregar
+                </MudButton>
+                <MudButton 
+                    Variant="Variant.Filled"
+                    Color="Color.Secondary"
+                    Href="/Listar"
+                    Class="shadow-none">
+                    Volver a lista
+                </MudButton>
                 <FluentValidationValidator />
                 <ValidationSummary />
             </EditForm>

@@ -6,12 +6,24 @@
                 Seguro de borrar la tarea ?
             </h3>
             <div class="d-flex flex-row justify-content-end mt-3">
-                <button @onclick="OnCancel" class="btn btn-secondary shadow-none mt-3">
+                @* <button @onclick="OnCancel" class="btn btn-secondary shadow-none mt-3">
                     Cancelar
                 </button>
                 <button @onclick="OnOk" class="btn btn-danger shadow-none ms-lg-3 mt-3">
                     Confirmar
-                </button>
+                </button> *@
+                <MudButton @onclick="OnCancel"
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    Class="shadow me-3">
+                    Cancelar
+                </MudButton>
+                <MudButton @onclick="OnOk"
+                    Variant="Variant.Filled"
+                    Color="Color.Secondary"
+                    Class="shadow-none">
+                    Borrar tarea
+                </MudButton>
             </div>
         </div>
     </div>

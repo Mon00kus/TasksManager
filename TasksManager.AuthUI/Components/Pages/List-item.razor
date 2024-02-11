@@ -19,13 +19,27 @@
     </div>    
 </div>
 <div class="actions">
-    <a href="@($"/edit/{taskItem.Id}")"
+    @* <a href="@($"/edit/{taskItem.Id}")"
        class="btn btn-warning shadow-none">
         Editar
     </a>
     <button @onclick="OpenConfirmDialog" class="btn btn-danger shadow-none ms-3">
         Borrar tarea
-    </button>
+    </button> *@
+    <MudButton 
+        Href="@($"/edit/{taskItem.Id}")"
+        Variant="Variant.Filled"
+        Color="Color.Warning"
+        Class="me-3">
+        Editar
+    </MudButton>
+    <MudButton 
+        @onclick="OpenConfirmDialog"
+        Variant="Variant.Filled"
+        Color="Color.Secondary"        
+        Class="shadow-none">
+        Borrar tarea
+    </MudButton>
 </div>
 
 <DelConfirmDialog Show="showConfirmDialog"

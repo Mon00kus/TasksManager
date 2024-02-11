@@ -1,4 +1,12 @@
-﻿@inherits LayoutComponentBase
+﻿@* @using MudBlazor *@
+
+@inherits LayoutComponentBase
+
+<PageTitle>Task Manager</PageTitle>
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
 <div class="page">
     <div class="sidebar">
@@ -6,7 +14,7 @@
     </div>
 
     <main>
-        <div class="top-row px-4">
+        @* <div class="top-row px-4">
             <AuthorizeView>
                 <Authorized>
                     <a href="" target="">
@@ -14,7 +22,23 @@
                     </a>
                 </Authorized>                
             </AuthorizeView>            
-        </div>
+        </div> *@
+
+        <MudAppBar Color="Color.Primary" Fixed="false" Elevation="0">
+            <AuthorizeView>
+                <Authorized>
+                    @* <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" /> *@
+                    <MudSpacer />
+                    <MudImage 
+                        Src="assets/images/evotec.png" 
+                        Alt="Logo evotec.cl" 
+                        Elevation="25" 
+                        Class="rounded-lg" 
+                        Width="80"
+                        Height="30"/>
+                </Authorized>
+            </AuthorizeView>
+        </MudAppBar>
 
         <article class="content px-4">
             @Body
@@ -23,7 +47,7 @@
 </div>
 
 <div id="blazor-error-ui">
-    An unhandled error has occurred.
+    Un error no controlado ha ocurrido.
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>

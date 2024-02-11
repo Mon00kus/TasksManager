@@ -1,22 +1,31 @@
 ﻿@implements IDisposable
-
 @inject NavigationManager NavigationManager
 
-<div class="top-row ps-3 navbar navbar-dark">
+
+@* <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">Gestión Tareas</a>
+        <a class="navbar-brand" href="">Gestión de Tareas</a>
     </div>
-</div>
+</div> *@
+
+<MudAppBar Color="Color.Dark" Fixed="false" Elevation="0">
+    <MudList Clickable="false">
+        <MudListItem 
+            Text="Gestión tareas" 
+            Icon="@Icons.Material.Filled.Bookmark" 
+            IconColor="Color.Surface"/>
+    </MudList>    
+</MudAppBar>
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="flex-column">
-        
+
         @* <div class="nav-item px-3">
-            <NavLink class="nav-link" href="auth">
-                <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Debe autenticar
-            </NavLink>
+        <NavLink class="nav-link" href="auth">
+        <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Debe autenticar
+        </NavLink>
         </div> *@
 
         <AuthorizeView>
@@ -64,6 +73,14 @@
 </div>
 
 @code {
+
+    bool open = false;
+
+    void ToggleDrawer()
+    {
+        open = !open;
+    }
+
     private string? currentUrl;
 
     protected override void OnInitialized()

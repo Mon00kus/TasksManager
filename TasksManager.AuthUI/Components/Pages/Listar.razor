@@ -15,32 +15,24 @@ else
 {
     <div class="row justify-content-center">
         <div class="col-6">
-            <a href="add-new"
-               class="btn btn-primary shadow mb-3">
-                Agregar tarea
-            </a>
-            <div class="mb-3">
-                <label for="state" class="form-label">
-                    Filtrar tarea
-                </label>
-                <InputSelect 
-                    id="state"                    
-                    @bind-Value="taskManagement.State"          
-                    @onchange="EventCallback.Factory.Create<ChangeEventArgs>(this, FilterTasks)"
-                    class="form-control"
-                >
-                    <option value="0">
-                        Seleccione opción
-                    </option>
-                    @foreach (var state in Enum.GetValues(typeof(State)))
-                    {
-                        @* <option value="@state">
-                            @state.ToString()
-                        </option> *@
-                        <option value="@((int)state)">@state.ToString()</option>
-                    }
-                </InputSelect>
-            </div>
+            <div class="d-flex justify-content-start mb-3">
+                <MudButton 
+                    Variant="Variant.Filled" 
+                    Color="Color.Primary" 
+                    Href="add-new" 
+                    Class="shadow me-3"
+                >   Agregar tarea 
+                </MudButton>
+                <MudButton 
+                    Variant="Variant.Filled" 
+                    Color="Color.Secondary" 
+                    Href="graff" 
+                    Class="shadow-none"
+                >   Graficar 
+                </MudButton>
+                @* <a href="add-new" class="btn btn-primary shadow me-3">Agregar tarea</a> 
+                <a href="/Graff" class="btn btn-secondary shadow-none">Graficar</a> *@
+            </div>                        
             @if (taskList is null)
             {
                 <div class="book-item">
@@ -93,14 +85,5 @@ else
                 authMessage = $"{user.Identity.Name} esta autenticado.";
             }
         }        
-    }
-        
-    private async Task FilterTasks(ChangeEventArgs e)
-    {
-        if (int.TryParse(e.Value?.ToString(), out var stateValue) && Enum.IsDefined(typeof(State), stateValue))
-        {
-            taskList = await Repository.GetTasksByStateAsync((State)stateValue);
-            StateHasChanged();
-        }
-    }
+    }            
 }

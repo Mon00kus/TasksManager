@@ -1,0 +1,70 @@
+﻿@page "/graff"
+
+<PageTitle>
+    Gráfica de las tareas
+</PageTitle>
+
+@if (authMessage == "NO autenticado.")
+{
+    <div class="list-item" style="font-size:20px">
+        Debe estar autenticado para ver las tareas.
+    </div>
+}
+else
+{    
+  <div>
+      <MudChart 
+          ChartType="ChartType.Bar" 
+          ChartSeries="@Series" 
+          @bind-SelectedIndex="index" 
+          XAxisLabels="@XAxisLabels"
+          Width="100%"
+          Height="350px"></MudChart>
+  </div>
+
+    <MudText Typo="Typo.h6">Gráfico de barras en base a tareas</MudText>
+
+    <MudButton Variant="Variant.Filled" 
+        Color="Color.Primary"
+        Class="shadow me-3">
+        Cambiar Tipo de gráfico
+    </MudButton>
+    <MudButton Variant="Variant.Filled"
+        Color="Color.Secondary"
+        Href="/Listar"
+        Class="shadow-none">
+        Volver a lista
+    </MudButton>
+}
+
+@code {
+
+    private string authMessage = "NO autenticado.";
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        if (authenticationState is not null)
+        {
+            var authState = await authenticationState;
+            var user = authState?.User;
+
+            if (user?.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                authMessage = $"{user.Identity.Name} esta autenticado.";
+            }
+        }
+    }
+
+    private int index = -1;
+    public List<ChartSeries> Series = new List<ChartSeries>()
+    {
+        new ChartSeries() { Name="United states", Data = new double[] { 40,20,25,27,46, 60,48,80,15} },
+        new ChartSeries() { Name="Germany", Data = new double[] { 19,24,35,13,28, 15,13,16,31} },
+        new ChartSeries() { Name="United states", Data = new double[] { 8,6,11,13,4,16,10,16,18} }
+    };
+    public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
+}

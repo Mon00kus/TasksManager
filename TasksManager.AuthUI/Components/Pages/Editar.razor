@@ -70,15 +70,26 @@
                     </InputSelect>
                 </div>
                 <div class="mb-3">
-                    <button class="btn btn-primary shadow-none">
+                    @* <button class="btn btn-primary shadow-none">
                         Enviar
                     </button>
                     <a href="/"
                        class="btn btn-secondary shadow-none ms-3">
                         Volver a tareas
-                    </a>
+                    </a> *@
+                    <MudButton 
+                        Variant="Variant.Filled" 
+                        Color="Color.Primary"                        
+                        Class="shadow me-3">Enviar
+                    </MudButton>
+                    <MudButton 
+                        Variant="Variant.Filled" 
+                        Color="Color.Secondary" 
+                        Href="/Listar" 
+                        Class="shadow-none">Volver a tareas
+                    </MudButton>
                 </div>
-                <DataAnnotationsValidator />
+                <FluentValidationValidator />
                 <ValidationSummary />
             </EditForm>
         </div>

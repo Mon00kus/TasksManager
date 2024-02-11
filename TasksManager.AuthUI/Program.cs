@@ -7,6 +7,7 @@ using TasksManager.AuthUI.Components.Account;
 using TasksManager.AuthUI.Data;
 using TasksManager.Infrastructure.Context;
 using TasksManager.Infrastructure.Repositories;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +45,8 @@ builder.Services.AddDbContextFactory<TasksManagerDbContext>(Options =>
 });
 
 builder.Services.AddScoped<ITasksManagementRepository, TasksManagementRepository>();
+
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 
