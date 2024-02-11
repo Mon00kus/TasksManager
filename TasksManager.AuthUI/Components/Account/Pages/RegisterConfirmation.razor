@@ -19,8 +19,15 @@
 @if (emailConfirmationLink is not null)
 {
     <p>
-        Esta aplicación actualmente no tiene un remitente de correo electrónico real registrado, consulte <a href="">these docs</a> para saber cómo configurar un remitente de correo electrónico real.
-        Normalmente esto se enviaría por correo electrónico: <a href="@emailConfirmationLink">Haga clic aquí para confirmar su cuenta</a>
+        Esta aplicación actualmente no tiene un remitente de correo electrónico real registrado, consulte 
+        <a href="">Documentos relacionados al tema</a> para saber cómo configurar un remitente de correo electrónico real.
+        Normalmente esto se enviaría por correo electrónico:
+        <MudLink Href="@emailConfirmationLink" Typo="Typo.h5">
+            Haga click aqui para confirmar resgitro
+        </MudLink>
+@*         <a href="@emailConfirmationLink">
+            Haga clic aquí
+        para confirmar su cuenta</a> *@
     </p>
 }
 else
