@@ -23,13 +23,15 @@ else
                     Class="shadow me-3"
                 >   Agregar tarea 
                 </MudButton>
-                <MudButton 
-                    Variant="Variant.Filled" 
-                    Color="Color.Secondary" 
-                    Href="graff" 
-                    Class="shadow-none"
-                >   Graficar 
-                </MudButton>
+                @if (taskList.Any())
+                {
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Secondary"
+                               Href="graff"
+                               Class="shadow-none">
+                        Graficar
+                    </MudButton>
+                }                
                 @* <a href="add-new" class="btn btn-primary shadow me-3">Agregar tarea</a> 
                 <a href="/Graff" class="btn btn-secondary shadow-none">Graficar</a> *@
             </div>                        
